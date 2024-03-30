@@ -1,0 +1,18 @@
+.toast-message{
+    z-index: 111;
+}
+.toast{
+    background: #229f7cad !important;
+}
+.toast-body{
+    color: white;
+    font-weight: 400;
+    font-size: 16px;
+}
+.btn-close{
+    position: relative;
+    top: 2px;
+}
+.position-fixed{
+    z-index: 111 !important;
+}
