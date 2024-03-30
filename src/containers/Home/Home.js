@@ -19,12 +19,10 @@ class Home extends Component {
     }
     render() {
         return (<>
-            {/* <Header activeRoute="home"></Header> */}
             <Hero title="Modern Interior" subTitle=" Design Studio" isShowImage="true" description="Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique." buttonData={buttonProp}></Hero>
             <WhyUs></WhyUs>
             <Testimonial></Testimonial>
             <Blog></Blog>
-            {/* <Footer></Footer> */}
         </>)
     }
 }

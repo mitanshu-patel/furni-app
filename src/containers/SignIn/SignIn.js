@@ -21,20 +21,6 @@ const SignIn = (props) => {
                                     <div className="header-underline"></div>
                                 </div>
                                 <form>
-                                    {/* <div className="row">
-                                        <div className="col-6">
-                                            <div className="form-group">
-                                                <label className="text-black" htmlFor="fname">First name</label>
-                                                <input type="text" className="form-control" id="fname" />
-                                            </div>
-                                        </div>
-                                        <div className="col-6">
-                                            <div className="form-group">
-                                                <label className="text-black" htmlFor="lname">Last name</label>
-                                                <input type="text" className="form-control" id="lname" />
-                                            </div>
-                                        </div>
-                                    </div> */}
                                     <div className="form-group">
                                         <label className="text-black" htmlFor="email">Email address</label>
                                         <input type="email" className="form-control" id="email" />
@@ -43,12 +29,6 @@ const SignIn = (props) => {
                                         <label className="text-black" htmlFor="password">Password</label>
                                         <input type="password" className="form-control" id="password" />
                                     </div>
-
-                                    {/* <div className="form-group mb-5">
-                                        <label className="text-black" htmlFor="message">Message</label>
-                                        <textarea name="" className="form-control" id="message" cols="30" rows="5"></textarea>
-                                    </div> */}
-
                                     <button type="submit" className="btn btn-primary-hover-outline mt-4">Sign In</button>
                                     <small className="signup-text">Don't have an account? &nbsp;<Link className="nav-link" to="/register">Sign up now</Link></small>
                                 </form>

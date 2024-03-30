@@ -12,7 +12,6 @@ const Cart = (props) => {
         })
     })
     return (<>
-        {/* <Header activeRoute="cart"></Header> */}
         <Hero title="Cart"></Hero>
         <div className="untree_co-section before-footer-section">
             <div className="container">
@@ -122,7 +121,6 @@ const Cart = (props) => {
                 </div>
             </div>
         </div>
-        {/* <Footer></Footer> */}
     </>)
 }
 

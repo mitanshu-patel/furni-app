@@ -12,10 +12,8 @@ class Shop extends Component {
     }
     render() {
         return <>
-            {/* <Header></Header> */}
             <Hero title="Shop"></Hero>
             <ProductsList></ProductsList>
-            {/* <Footer></Footer> */}
         </>
     }
 }
