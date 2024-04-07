@@ -1,8 +1,15 @@
 import { useLocation, Link } from "react-router-dom";
 import '../Header/Header.css'
+import { useEffect } from "react";
 
-const { Component } = require("react");
 const Header = (props) => {
+
+    function clearSession() {
+        props.handleUserState({
+            userName: ''
+        })
+        localStorage.removeItem('userDetails');
+    }
     return (<nav className="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 
         <div className="container">
@@ -25,8 +32,9 @@ const Header = (props) => {
                 </ul>
 
                 <ul className="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                    <li className={props.activeRoute === 'login' || props.activeRoute === 'register' ? 'nav-item icon-active' : 'nav-item'}><Link className="nav-link" to="/login"><img src="images/user.svg" alt="" /></Link></li>
-                    <li className={props.activeRoute === 'cart' ? 'nav-item icon-active' : 'nav-item'}><Link className="nav-link" to="/cart"><img src="images/cart.svg" alt="" /></Link></li>
+                    {props.userName === '' ? <li className={props.activeRoute === 'login' || props.activeRoute === 'register' ? 'nav-item icon-active' : 'nav-item'}><Link className="nav-link" to="/login"><img src="images/user.svg" alt="" /></Link></li> : <li className="nav-item username">{props.userName}</li>}
+                    {props.userName === '' ? null : <li className="nav-item username logout-link" onClick={clearSession}>Logout</li>}
+                    <li className={props.activeRoute === 'cart' ? 'nav-item icon-active' : 'nav-item'}><Link className="nav-link" to="/cart"><img src="images/cart.svg" alt="" /></Link>{props.productCount > 0 ? <span className="cart-count">{props.productCount}</span> : null}</li>
                 </ul>
             </div>
         </div>

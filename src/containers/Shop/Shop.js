@@ -13,7 +13,7 @@ class Shop extends Component {
     render() {
         return <>
             <Hero title="Shop"></Hero>
-            <ProductsList></ProductsList>
+            <ProductsList handleCartState={this.props.handleCartState} cartProducts={this.props.cartProducts}></ProductsList>
         </>
     }
 }

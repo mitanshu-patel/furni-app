@@ -5,6 +5,8 @@ import '../Register/Register.css'
 import { json, useNavigate } from "react-router-dom"
 import ErrorBanner from "../../components/ErrorBanner/ErrorBanner"
 import Toast from "../../components/Toast/Toast"
+import AppConstants from "../../constants/app-constants"
+import HttpService from "../../services/http-service"
 
 let formSubmitted = false;
 const Register = (props) => {
@@ -12,7 +14,7 @@ const Register = (props) => {
         props.handleAppState({
             activeRoute: 'login'
         })
-    })
+    },[])
 
     const [formState, setFormState] = useState({
         submitted: false,
@@ -67,32 +69,28 @@ const Register = (props) => {
             isLoading: true
         }
         setFormState(formStateDetail);
-        await fetch('http://localhost:7258/api/userservice/v1/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                Name: inputValue.name.value,
-                Email: inputValue.email.value,
-                Mobile: inputValue.mobileNo.value,
-                Password: inputValue.password.value
+        const body = JSON.stringify({
+            Name: inputValue.name.value,
+            Email: inputValue.email.value,
+            Mobile: inputValue.mobileNo.value,
+            Password: inputValue.password.value
+        });
+        await HttpService.post(AppConstants.UserService.BaseUrl + AppConstants.UserService.Register, body)
+            .then(response => {
+                formStateDetail.isLoading = false;
+                setFormState(formStateDetail);
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text) })
+                }
+                else {
+                    props.handleToastState({
+                        successMessage: 'User Added Successfully'
+                    })
+                    navigate('/login');
+                }
+            }).catch(error => {
+                setErrorMessage(error.message);
             })
-        }).then(response => {
-            formStateDetail.isLoading = false;
-            setFormState(formStateDetail);
-            if (!response.ok) {
-                return response.text().then(text => { throw new Error(text) })
-            }
-            else {
-                props.handleToastState({
-                    successMessage: 'User Added Successfully'
-                })
-                navigate('/login');
-            }
-        }).catch(error => {
-            setErrorMessage(error.message);
-        })
     }
 
     function handleRegistration() {
@@ -127,12 +125,6 @@ const Register = (props) => {
             },
         }
         );
-    }
-
-    function closeToast() {
-        props.handleToastState({
-            successMessage: ''
-        })
     }
 
     function validateFields() {
@@ -207,7 +199,7 @@ const Register = (props) => {
 
                                     {
                                         formState.isLoading ? <button type="button" className="btn btn-primary-hover-outline mt-4" disabled>
-                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;<span>Creating Account...</span>
+                                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;<span>Creating Account...</span>
                                         </button> :
                                             <button type="button" className="btn btn-primary-hover-outline mt-4" onClick={submitForm}>
                                                 Create Account
