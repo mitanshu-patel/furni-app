@@ -1,14 +1,17 @@
-import { useLocation, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import '../Header/Header.css'
 import { useEffect } from "react";
 
 const Header = (props) => {
+    const navigate = useNavigate();
 
     function clearSession() {
         props.handleUserState({
             userName: ''
         })
         localStorage.removeItem('userDetails');
+        localStorage.removeItem('cartData');
+        navigate('/login')
     }
     return (<nav className="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 

@@ -1,3 +1,8 @@
 .quantity-container{
     max-width: 120px !important;
+    background-color: grey;
+}
+
+.disable{
+    pointer-events: none;
 }

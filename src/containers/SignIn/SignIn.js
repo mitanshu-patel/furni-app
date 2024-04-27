@@ -13,7 +13,7 @@ const SignIn = (props) => {
         props.handleAppState({
             activeRoute: 'login'
         })
-    },[])
+    }, [])
 
     const [inputValue, setInputValue] = useState({
         email: { touched: false, value: '' },
@@ -118,7 +118,7 @@ const SignIn = (props) => {
             email: inputValue.email.value,
             password: inputValue.password.value
         });
-       
+
         await HttpService.post(AppConstants.UserService.BaseUrl + AppConstants.UserService.Login, body)
             .then(async response => {
                 formStateDetail.isLoading = false;
@@ -129,7 +129,10 @@ const SignIn = (props) => {
                 else {
                     const json = await response.json();
                     props.handleUserState({
-                        userName:json.userName
+                        userName: json.userName,
+                        email: json.email,
+                        userId: json.userId,
+                        token: json.token
                     })
 
                     localStorage.setItem('userDetails', JSON.stringify(json));

@@ -25,24 +25,18 @@ const ProductsList = (props) => {
     }
 
     const getData = async () => {
-        const getUserDetail = localStorage.getItem('userDetails');
-        if (getUserDetail !== '') {
-            const obj = JSON.parse(getUserDetail);
-            if (obj !== undefined && obj.token !== undefined && obj.token !== '') {
-                await HttpService.get(AppConstants.ProductService.BaseUrl + AppConstants.ProductService.GetProducts, obj.token)
-                    .then(async response => {
-                        setProductLoaded(true);
-                        if (!response.ok) {
-                            return response.text().then(text => { throw new Error(text) })
-                        }
-                        else {
-                            const json = await response.json();
-                            updateProductState(json.products)
-                        }
-                    }).catch(error => {
-                    })
+        await HttpService.get(AppConstants.ProductService.BaseUrl + AppConstants.ProductService.GetProducts)
+        .then(async response => {
+            setProductLoaded(true);
+            if (!response.ok) {
+                return response.text().then(text => { throw new Error(text) })
             }
-        }
+            else {
+                const json = await response.json();
+                updateProductState(json.products)
+            }
+        }).catch(error => {
+        })
     }
 
     function updateProductState(products) {
@@ -65,13 +59,13 @@ const ProductsList = (props) => {
                     {
                         productList.map(function (v) {
                             return (
-                                <div key={v.productId} className={`col-12 col-md-4 col-lg-3 mb-5 ${v.isAdded ? 'item-disabled' : ''}`}>
+                                <div key={v.productId} className={`col-12 col-md-4 col-lg-3 mb-5 ${v.isAdded || !props.userState ? 'item-disabled' : ''}`}>
                                     <a className="product-item" onClick={() => addItem(v.productId)}>
                                         <img src={v.imageUrl} className="img-fluid product-thumbnail" />
                                         <h3 className="product-title">{v.name}</h3>
                                         <strong className="product-price">${v.price}</strong>
                                         {v.isAdded ? <><br /><strong className="product-price">Added to Cart</strong></> : null}
-
+                                        {!props.userState ? <><br /><strong className="product-price">Login to Add to Cart</strong></> : null}
                                         <span className="icon-cross">
                                             <img src="images/cross.svg" className="img-fluid" />
                                         </span>

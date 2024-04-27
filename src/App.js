@@ -27,7 +27,10 @@ const App = () => {
       const obj = JSON.parse(userDetailsString);
       if (obj.userName != undefined && obj.userName !== userState.userName) {
         setUserState({
-          userName: obj.userName
+          userName: obj.userName,
+          email: obj.email,
+          userId:obj.userId,
+          token:obj.token
         })
       }
       else if (!obj.userName) {
@@ -38,9 +41,9 @@ const App = () => {
 
   function updateCartState() {
     const storedCartData = localStorage.getItem('cartData');
-    console.log("Cart data", storedCartData);
     if (storedCartData !== '' && storedCartData !== null) {
-      setCartData([...JSON.parse(storedCartData)]);
+      const products = JSON.parse(storedCartData)?.products
+      setCartData([...products]);
     }
   }
 
@@ -53,7 +56,10 @@ const App = () => {
   })
 
   const [userState, setUserState] = useState({
-    userName: ''
+    userName: '',
+    email: '',
+    userId:0,
+    token:''
   })
 
   const [cartData, setCartData] = useState([]);
@@ -72,7 +78,11 @@ const App = () => {
 
   function updateCart(products) {
     setCartData([...products]);
-    localStorage.setItem('cartData', JSON.stringify(cartData));
+    const cartDetails = {
+      email:userState.email,
+      products: products
+    }
+    localStorage.setItem('cartData', JSON.stringify(cartDetails));
   }
 
   return (
@@ -81,12 +91,12 @@ const App = () => {
       <Routes>
         <Route exact path="/" element={<Home handleAppState={updateAppState}></Home>} />
         <Route path="/home" element={<Home handleAppState={updateAppState}></Home>} />
-        <Route path="/shop" element={<Shop handleAppState={updateAppState} handleCartState={updateCart} cartProducts={cartData}></Shop>} />
+        <Route path="/shop" element={<Shop handleAppState={updateAppState} handleCartState={updateCart} cartProducts={cartData} userState={userState}></Shop>} />
         <Route path="/about-us" element={<Home handleAppState={updateAppState}></Home>} />
         <Route path="/services" element={<Home handleAppState={updateAppState}></Home>} />
         <Route path="/blog" element={<Home handleAppState={updateAppState}></Home>} />
         <Route path="/contact-us" element={<Home handleAppState={updateAppState}></Home>} />
-        <Route path="/cart" element={<Cart handleAppState={updateAppState} handleToastState={setToastState} cartProducts={cartData} handleCartState={updateCart}></Cart>} />
+        <Route path="/cart" element={<Cart handleAppState={updateAppState} handleToastState={setToastState} cartProducts={cartData} handleCartState={updateCart} userState={userState}></Cart>} />
         <Route path="/login" element={<SignIn handleAppState={updateAppState} handleToastState={setToastState} handleUserState={setUserState}></SignIn>} />
         <Route path="/register" element={<Register handleAppState={updateAppState} handleToastState={setToastState}></Register>} />
       </Routes>

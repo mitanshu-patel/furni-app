@@ -8,6 +8,10 @@ const AppConstants = {
     ProductService:{
         BaseUrl: 'http://localhost:7125/api/productservice/',
         GetProducts: 'v1/products',
+    },
+    OrderService:{
+        BaseUrl: 'http://localhost:7169/api/orderservice/',
+        AddOrder: 'v1/orders',
     }
 }
 

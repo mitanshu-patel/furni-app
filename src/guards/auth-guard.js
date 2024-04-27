@@ -5,7 +5,18 @@ let isAuthenticated = false;
 const useRouteGuard = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   const userDetailsString = localStorage.getItem('userDetails');
+  //   if (userDetailsString !== '' && userDetailsString !== null) {
+  //     const obj = JSON.parse(userDetailsString);
+  //     if (obj.userName !== undefined) {
+  //       isAuthenticated = true;
+  //     }
+  //   }
+  // }, []);
+
+  
+  function isUserAuthenticated(){
     const userDetailsString = localStorage.getItem('userDetails');
     if (userDetailsString !== '' && userDetailsString !== null) {
       const obj = JSON.parse(userDetailsString);
@@ -13,14 +24,18 @@ const useRouteGuard = () => {
         isAuthenticated = true;
       }
     }
-  }, []);
+  }
 
   useEffect(() => {
     // If user is not authenticated, redirect to login page
+    isUserAuthenticated();
     if (!isAuthenticated) {
       navigate("/login");
     }
-  }, [isAuthenticated, navigate]);
+  },
+  // [isAuthenticated, navigate]
+  []
+);
 
   return isAuthenticated;
 };

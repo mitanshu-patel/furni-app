@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react"
-import Footer from "../../components/Footer/Footer"
-import Header from "../../components/Header/Header"
+import { useNavigate } from "react-router-dom"
+
 import Hero from "../../components/Hero/Hero"
 
 import '../Cart/Cart.css'
+import HttpService from "../../services/http-service"
+import AppConstants from "../../constants/app-constants"
+import ErrorBanner from "../../components/ErrorBanner/ErrorBanner"
 
 const Cart = (props) => {
 
@@ -16,6 +19,9 @@ const Cart = (props) => {
         setTotal(props.cartProducts.reduce((acc, v) => acc + (v.price * v.quantity), 0));
     }, [])
 
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isLoading, setLoader] = useState(false);
+    const navigate = useNavigate();
     function removeItem(id) {
         let products = props.cartProducts;
         products.splice(products.findIndex(v => v.productId == id), 1);
@@ -62,6 +68,40 @@ const Cart = (props) => {
         }
     }
 
+    const placeOrder = async () => {
+        const products = props.cartProducts.map(t => {
+            return {
+                ProductId: t.productId,
+                Quantity: t.quantity
+            }
+        });
+
+        const data = {
+            ProductOrders: products,
+            UserId: props.userState.userId
+        }
+
+        setLoader(true);
+        await HttpService.post(AppConstants.OrderService.BaseUrl + AppConstants.OrderService.AddOrder, JSON.stringify(data), props.userState.token)
+            .then(async response => {
+                setLoader(false);
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text) })
+                }
+                else {
+                    const json = await response.json();
+                    
+                    props.handleToastState({
+                        successMessage: 'Order Placed Successfully'
+                    })
+                    localStorage.removeItem('cartData', JSON.stringify(json));
+                    navigate('/home');
+                }
+            }).catch(error => {
+                setErrorMessage(error.message);
+            })
+    }
+
     return (<>
         <Hero title="Cart"></Hero>
         <div className="untree_co-section before-footer-section">
@@ -69,6 +109,7 @@ const Cart = (props) => {
                 <div className="row mb-5">
                     <form className="col-md-12" method="post">
                         <div className="site-blocks-table">
+                            {errorMessage !== '' ? <ErrorBanner message={errorMessage}></ErrorBanner> : null}
                             {props.cartProducts.length > 0 ?
 
                                 <table className="table">
@@ -95,7 +136,7 @@ const Cart = (props) => {
                                                         </td>
                                                         <td>${t.price}</td>
                                                         <td>
-                                                            <div className="input-group mb-3 d-flex align-items-center quantity-container">
+                                                            <div className={`input-group mb-3 d-flex align-items-center quantity-container ${isLoading ? 'disabled' : ''}`}>
                                                                 <div className="input-group-prepend">
                                                                     <button className="btn btn-outline-black decrease" type="button" onClick={() => removeQuantity(t.productId)}>&minus;</button>
                                                                 </div>
@@ -107,7 +148,7 @@ const Cart = (props) => {
 
                                                         </td>
                                                         <td>${Math.round(t.quantity * t.price, 2)}</td>
-                                                        <td><a className="btn btn-black btn-sm" onClick={() => removeItem(t.productId)}>X</a></td>
+                                                        <td><a className={`btn btn-black btn-sm ${isLoading ? 'disabled' : ''}`} onClick={() => removeItem(t.productId)}>X</a></td>
                                                     </tr>
                                                 )
                                             })
@@ -135,13 +176,17 @@ const Cart = (props) => {
                                         <span className="text-black">Total</span>
                                     </div>
                                     <div className="col-md-6 text-right">
-                                        <strong className="text-black">${Math.round(total,2)}</strong>
+                                        <strong className="text-black">${Math.round(total, 2)}</strong>
                                     </div>
                                 </div>
 
                                 <div className="row">
                                     <div className="col-md-12">
-                                        <button className="btn btn-black btn-lg py-3 btn-block">Proceed To Checkout</button>
+
+                                        {
+                                            isLoading ? <button type="button" className="btn btn-primary-hover-outline mt-4" disabled><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;<span>Placing your Order...</span></button> :
+                                                <button className="btn btn-black btn-lg py-3 btn-block" onClick={placeOrder}>Proceed To Checkout</button>
+                                        }
                                     </div>
                                 </div>
                             </div>
